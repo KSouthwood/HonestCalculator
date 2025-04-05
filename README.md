@@ -27,8 +27,13 @@ We will start by implementing the flowchart below. Copy the messages carefully
 and assign them to the program variables. It makes no difference whether you make a list or each message is a 
 separate variable. The appropriate messages must be displayed according to the flowchart.
 
-![flowchart](assets/flowchart.webp)
+![flowchart_stage1](assets/flowchart.webp)
 
-### Stage 2: [name](https://hyperskill.org/projects/00/stages/00/implement)
+### Stage 2: [First calculations](https://hyperskill.org/projects/350/stages/2057/implement)
 #### _Summary_
-Text
+Implement the new flowchart below. Use these guidelines as well:
+- Don't use the built-in functions to calculate from a string
+- The `result` variable must be of the `float` type
+- `msg_3` should be "Yeah... division by zero. Smart move..."
+
+![flowchart_stage2](assets/flowchart_stage2.webp)

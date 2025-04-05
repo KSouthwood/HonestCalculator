@@ -23,6 +23,10 @@ public final class ConsoleIO {
         output.println(message);
     }
 
+    public void println(Float num) {
+        output.println(num);
+    }
+
     public void print(String message) {
         output.print(message);
         output.flush();
