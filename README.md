@@ -37,3 +37,10 @@ Implement the new flowchart below. Use these guidelines as well:
 - `msg_3` should be "Yeah... division by zero. Smart move..."
 
 ![flowchart_stage2](assets/flowchart_stage2.webp)
+
+### Stage 3: [Total recall](https://hyperskill.org/projects/350/stages/2058/implement)
+#### _Summary_
+Implement the upgraded flowchart below to add a memory variable to the calculator. The new steps in the 
+flowchart are in white while the old steps are in red. There are also two new messages to add to the strings.
+
+![flowchart_stage3](assets/flowchart_stage3.webp)
