@@ -6,21 +6,25 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public class Calculator {
-    private final        Map<Integer, String> messages            = Map.of(
-            0, "Enter an equation",
-            1, "Do you even know what numbers are? Stay focused!",
-            2, "Yes ... an interesting math operation. You've slept through all classes, haven't you?",
-            3, "Yeah... division by zero. Smart move...",
-            4, "Do you want to store the result? (y / n):",
-            5, "Do you want to continue calculations? (y / n):",
-            6, " ... lazy",
-            7, " ... very lazy",
-            8, " ... very, very lazy",
-            9, "You are"
+    private final        Map<Integer, String> messages            = Map.ofEntries(
+            Map.entry(0, "Enter an equation"),
+            Map.entry(1, "Do you even know what numbers are? Stay focused!"),
+            Map.entry(2, "Yes ... an interesting math operation. You've slept through all classes, haven't you?"),
+            Map.entry(3, "Yeah... division by zero. Smart move..."),
+            Map.entry(4, "Do you want to store the result? (y / n):"),
+            Map.entry(5, "Do you want to continue calculations? (y / n):"),
+            Map.entry(6, " ... lazy"),
+            Map.entry(7, " ... very lazy"),
+            Map.entry(8, " ... very, very lazy"),
+            Map.entry(9, "You are"),
+            Map.entry(10, "Are you sure? It is only one digit! (y / n)"),
+            Map.entry(11, "Don't be silly! It's just one number! Add to the memory? (y / n)"),
+            Map.entry(12, "Last chance! Do you really want to embarrass yourself? (y / n)")
     );
-    private static final List<String>         OPERATORS           = List.of("+", "-", "*", "/");
     private final        ConsoleIO            consoleIO;
     private static final Pattern              VALID_INT_OR_DOUBLE = Pattern.compile("^-?(\\d|[1-9]\\d*)(\\.\\d+)?$");
+    private static final List<String>         OPERATORS           = List.of("+", "-", "*", "/");
+    private static final List<String>         YES_OR_NO           = List.of("y", "n");
 
     public Calculator(ConsoleIO consoleIO) {
         this.consoleIO = consoleIO;
@@ -56,35 +60,72 @@ public class Calculator {
                 consoleIO.println(messages.get(3));
                 continue;
             }
+
             consoleIO.println((float) result);
 
-            String answer;
-            do {
-                consoleIO.println(messages.get(4));
-                answer = consoleIO.getUserInput()
-                                  .toLowerCase(Locale.ROOT);
-                switch (answer) {
-                    case "y":
-                        memory = result;
-                    case "n":
-                    default:
-                        break;
-                }
-            } while (!answer.equals("y") && !answer.equals("n"));
+            if (askToStoreResult(result)) {
+                memory = result;
+            }
 
-            do {
-                consoleIO.println(messages.get(5));
-                answer = consoleIO.getUserInput()
-                                  .toLowerCase(Locale.ROOT);
-                switch (answer) {
-                    case "n":
-                        isFinishedCalculations = true;
-                    case "y":
-                    default:
-                }
-            } while (!answer.equals("y") && !answer.equals("n"));
+            isFinishedCalculations = checkContinueCalculations();
 
         } while (!isFinishedCalculations);
+    }
+
+    private boolean askToStoreResult(double result) {
+        String  answer;
+        boolean storeResult = true;
+
+        do {
+            consoleIO.println(messages.get(4));
+            answer = consoleIO.getUserInput()
+                              .toLowerCase(Locale.ROOT);
+            switch (answer) {
+                case "y" -> {
+                    if (isOneDigit(result)) {
+                        storeResult = storeResult();
+                    }
+                }
+                case "n" -> storeResult = false;
+            }
+        } while (!YES_OR_NO.contains(answer));
+
+        return storeResult;
+    }
+
+    private boolean storeResult() {
+        String  answer      = "";
+        int     msgIndex    = 10;
+        boolean storeResult = true;
+
+        while (msgIndex <= 12 && !answer.equals("n")) {
+            consoleIO.println(messages.get(msgIndex));
+            answer = consoleIO.getUserInput()
+                              .toLowerCase(Locale.ROOT);
+            switch (answer) {
+                case "y" -> msgIndex++;
+                case "n" -> storeResult = false;
+            }
+        }
+
+        return storeResult;
+    }
+
+    private boolean checkContinueCalculations() {
+        String  answer;
+        boolean continueCalculations = false;
+
+        do {
+            consoleIO.println(messages.get(5));
+            answer = consoleIO.getUserInput()
+                              .toLowerCase(Locale.ROOT);
+            switch (answer) {
+                case "y" -> continueCalculations = false;
+                case "n" -> continueCalculations = true;
+            }
+        } while (!YES_OR_NO.contains(answer));
+
+        return continueCalculations;
     }
 
     private String getEquation() {

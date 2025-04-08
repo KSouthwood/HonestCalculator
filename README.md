@@ -55,3 +55,9 @@ an integer in the mathematical sense. i.e. 3.0 is an integer, 3.1 is a non-integ
 Functions:
 
 ![flowchart_stage4_functions](assets/flowchart_stage4_functions.webp)
+
+### Stage 5: Saving memory
+#### _Summary_
+Implement the changes to the flowchart regarding storing the calculation result into memory.
+
+![flowchart_stage5](assets/flowchart_stage5.webp)
