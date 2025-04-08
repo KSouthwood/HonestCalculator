@@ -44,3 +44,14 @@ Implement the upgraded flowchart below to add a memory variable to the calculato
 flowchart are in white while the old steps are in red. There are also two new messages to add to the strings.
 
 ![flowchart_stage3](assets/flowchart_stage3.webp)
+
+### Stage 4: [The laziness test](https://hyperskill.org/projects/350/stages/2059/implement)
+#### _Summary_
+Implement the two functions in the lower flowchart. The `is_one_digit()` function should check if the value is
+an integer in the mathematical sense. i.e. 3.0 is an integer, 3.1 is a non-integer.
+
+![flowchart_stage4_main](assets/flowchart_stage4_main.webp)
+
+Functions:
+
+![flowchart_stage4_functions](assets/flowchart_stage4_functions.webp)

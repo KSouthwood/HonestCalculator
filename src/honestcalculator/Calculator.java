@@ -6,19 +6,21 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public class Calculator {
-    private final        Map<Integer, String> messages    = Map.of(
+    private final        Map<Integer, String> messages            = Map.of(
             0, "Enter an equation",
             1, "Do you even know what numbers are? Stay focused!",
             2, "Yes ... an interesting math operation. You've slept through all classes, haven't you?",
             3, "Yeah... division by zero. Smart move...",
             4, "Do you want to store the result? (y / n):",
-            5, "Do you want to continue calculations? (y / n):"
+            5, "Do you want to continue calculations? (y / n):",
+            6, " ... lazy",
+            7, " ... very lazy",
+            8, " ... very, very lazy",
+            9, "You are"
     );
-    private static final List<String>         OPERATORS   = List.of("+", "-", "*", "/");
+    private static final List<String>         OPERATORS           = List.of("+", "-", "*", "/");
     private final        ConsoleIO            consoleIO;
-    private static final Pattern              INT_REGEX   = Pattern.compile("^-?(\\d|[1-9]\\d*)$");
-    private static final Pattern              FLOAT_REGEX = Pattern.compile("^-?\\d+(\\.\\d+)?$");
-    private static final Pattern              VALID_INT_OR_FLOAT = Pattern.compile("^-?(\\d|[1-9]\\d*)(\\.\\d+)?$");
+    private static final Pattern              VALID_INT_OR_DOUBLE = Pattern.compile("^-?(\\d|[1-9]\\d*)(\\.\\d+)?$");
 
     public Calculator(ConsoleIO consoleIO) {
         this.consoleIO = consoleIO;
@@ -26,7 +28,7 @@ public class Calculator {
 
     public void run() {
         boolean isFinishedCalculations = false;
-        float memory = 0;
+        double  memory                 = 0;
 
         do {
             String   calc     = getEquation();
@@ -35,9 +37,9 @@ public class Calculator {
                 continue;
             }
 
-            float x = validateNumber(equation[0], memory);
-            float y = validateNumber(equation[2], memory);
-            if (Float.isNaN(x) || Float.isNaN(y)) {
+            double x = validateNumber(equation[0], memory);
+            double y = validateNumber(equation[2], memory);
+            if (Double.isNaN(x) || Double.isNaN(y)) {
                 consoleIO.println(messages.get(1));
                 continue;
             }
@@ -47,17 +49,20 @@ public class Calculator {
                 continue;
             }
 
-            float result = evaluateEquation(x, y, equation[1]);
-            if (Float.isNaN(result)) {
+            check(x, y, equation[1]);
+
+            double result = evaluateEquation(x, y, equation[1]);
+            if (Double.isNaN(result)) {
                 consoleIO.println(messages.get(3));
                 continue;
             }
-            consoleIO.println(result);
+            consoleIO.println((float) result);
 
             String answer;
             do {
                 consoleIO.println(messages.get(4));
-                answer = consoleIO.getUserInput().toLowerCase(Locale.ROOT);
+                answer = consoleIO.getUserInput()
+                                  .toLowerCase(Locale.ROOT);
                 switch (answer) {
                     case "y":
                         memory = result;
@@ -69,7 +74,8 @@ public class Calculator {
 
             do {
                 consoleIO.println(messages.get(5));
-                answer = consoleIO.getUserInput().toLowerCase(Locale.ROOT);
+                answer = consoleIO.getUserInput()
+                                  .toLowerCase(Locale.ROOT);
                 switch (answer) {
                     case "n":
                         isFinishedCalculations = true;
@@ -87,31 +93,64 @@ public class Calculator {
     }
 
     /**
-     * Parses and validates a string as a valid number or retrieves a stored memory value.
-     * If the input string represents a valid integer or floating-point number, it is parsed
-     * into a float. If the string equals "M", the given memory value is used. Otherwise,
-     * returns Float.NaN.
+     * Parses and validates a string as a valid number or retrieves a stored memory value. If the input string
+     * represents a valid integer or floating-point number, it is parsed into a double. If the string equals "M", the
+     * given memory value is used. Otherwise, returns Double.NaN.
      *
-     * @param num the input string to be validated as a number or the character "M"
+     * @param num    the input string to be validated as a number or the character "M"
      * @param memory the stored memory value to be returned if the input string is "M"
-     * @return the parsed float value, the memory value if the input is "M", or Float.NaN if invalid
+     * @return the parsed double value, the memory value if the input is "M", or Double.NaN if invalid
      */
-    private float validateNumber(String num, float memory) {
-        float parsedNum = Float.NaN;
-        if (VALID_INT_OR_FLOAT.matcher(num).matches()) { parsedNum = Float.parseFloat(num); }
-        if (num.equals("M")) { parsedNum = memory; }
+    private double validateNumber(String num, double memory) {
+        double parsedNum = Double.NaN;
+        if (VALID_INT_OR_DOUBLE.matcher(num)
+                               .matches()) {
+            parsedNum = Double.parseDouble(num);
+        }
+        if (num.equals("M")) {
+            parsedNum = memory;
+        }
         return parsedNum;
     }
 
-    private float evaluateEquation(float x, float y, String operator) {
+    private double evaluateEquation(double x, double y, String operator) {
         return switch (operator) {
             case "+" -> x + y;
             case "-" -> x - y;
             case "*" -> x * y;
             case "/" -> y == 0
-                        ? Float.NaN
+                        ? Double.NaN
                         : x / y;
-            default -> Float.NaN;
+            default -> Double.NaN;
         };
+    }
+
+    private void check(double x, double y, String operator) {
+        String message = "";
+        if (isOneDigit(x) && isOneDigit(y)) {
+            message += messages.get(6);
+        }
+        if ((x == 1.0 || y == 1.0) && operator.equals("*")) {
+            message += messages.get(7);
+        }
+        if ((x == 0.0 || y == 0.0) && !operator.equals("/")) {
+            message += messages.get(8);
+        }
+        if (!message.isBlank()) {
+            consoleIO.println(messages.get(9) + message);
+        }
+    }
+
+    /**
+     * Determines if a given number is a single-digit integer.
+     *
+     * @param num the number to be checked
+     * @return true if the number is a single-digit integer, false otherwise
+     */
+    private boolean isOneDigit(double num) {
+        if (num >= 10.0 || num <= -10.0) {
+            return false;
+        }
+        return Double.compare(num, (int) num) == 0;
     }
 }
